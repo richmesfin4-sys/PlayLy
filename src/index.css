@@ -1,0 +1,89 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --bs-primary: #0b2239;
+    --bs-body-font-family: "DM Sans", "Noto Sans Ethiopic", system-ui, -apple-system, sans-serif;
+    --bs-body-color: #0f172a;
+    --font-display: "Plus Jakarta Sans", "Noto Sans Ethiopic", system-ui, sans-serif;
+    --font-body: "DM Sans", "Noto Sans Ethiopic", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  }
+
+  .dark {
+    --bs-primary: #10b981;
+    --bs-body-color: #f8fafc;
+  }
+
+  html {
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  :focus-visible {
+    outline: 3px solid #d97706 !important;
+    outline-offset: 2px !important;
+  }
+
+  .dark :focus-visible {
+    outline: 3px solid #fbbf24 !important;
+    outline-offset: 2px !important;
+  }
+}
+
+.lang-am,
+.lang-ti,
+[lang="am"],
+[lang="ti"] {
+  font-family: "Noto Sans Ethiopic", "DM Sans", system-ui, sans-serif;
+  line-height: 1.75;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.lang-ar,
+[lang="ar"] {
+  font-family: "Noto Sans Arabic", "DM Sans", system-ui, sans-serif;
+  line-height: 1.75;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: #0b2239;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: top 150ms ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

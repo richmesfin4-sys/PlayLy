@@ -1,0 +1,12 @@
+Designing for everyone (demo lesson)
+
+[0:00] Welcome to this short lesson on digital accessibility.
+[0:00] [Description] Dark slate background. White title: "Accessible Learning Media". Below it, in smaller light text: "Demo lesson, Designing for everyone". A green audio waveform moves under the title while the narrator speaks.
+[0:04] One in six people worldwide live with a disability, visible or not.
+[0:09] Good design removes barriers. It does not remove people.
+[0:13] Captions let deaf and hard of hearing learners follow every word.
+[0:18] Screen readers describe the page aloud for blind and low vision learners.
+[0:24] Keyboard support means everyone can navigate without ever touching a mouse.
+[0:29] Plain language and clear steps support learners with cognitive disabilities.
+[0:35] Now let's build something that actually works for everyone.
+[0:35] [Description] The same title card stays on screen. The waveform slows and fades as the narration ends.

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Lesson Upload Studio — Dual-Video Publisher | Savanna</title>
+  <link rel="stylesheet" href="../assets/css/application_alx.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <script src="/savanna/module/db-player.js" defer></script>
+  <style>
+    :root {
+      --navy: #05192d;
+      --green: #0d5c3a;
+      --border: #cbd5e1;
+      --bg: #f8fafc;
+    }
+    body { background-color: var(--bg); color: #1e293b; }
+    .studio-header {
+      background: #ffffff;
+      border-bottom: 2px solid var(--navy);
+      padding: 1.25rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .form-label {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+    .form-hint {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+    .form-control, .form-select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.5rem 0.75rem;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+      outline: 3px solid #f5a300;
+      outline-offset: 2px;
+      border-color: var(--navy);
+    }
+    .btn-publish {
+      min-height: 48px;
+      padding: 0.6rem 1.5rem;
+      background: var(--green);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-publish:hover { background: #094229; }
+    .btn-secondary-action {
+      min-height: 48px;
+      padding: 0.6rem 1.25rem;
+      background: #ffffff;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 2px solid var(--navy);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-secondary-action:hover { background: #e2e8f0; }
+    .preview-box {
+      background: #020b14;
+      border: 2px solid var(--navy);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .video-dropzone {
+      border: 2px dashed #94a3b8;
+      border-radius: 6px;
+      padding: 1rem;
+      background: #f1f5f9;
+      margin-bottom: 0.5rem;
+    }
+    .badge-sync {
+      background: #e6f7f0;
+      color: var(--green);
+      border: 1px solid var(--green);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-alert {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      display: none;
+      font-weight: 600;
+    }
+    .status-alert.success { background: #d1fae5; border: 1px solid #10b981; color: #065f46; display: block; }
+    .status-alert.error { background: #fee2e2; border: 1px solid #ef4444; color: #991b1b; display: block; }
+  </style>
+</head>
+<body>
+  <div class="studio-header">
+    <div class="container-xl d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div>
+        <nav aria-label="Breadcrumb" style="font-size: 0.88rem; margin-bottom: 0.25rem;">
+          <a href="concept-with-navigation.html" style="font-weight: 700; color: #05192d;">&larr; Back to Learner Concept Lesson</a> |
+          <a href="../index.html" style="font-weight: 700; color: #0d5c3a;">Savanna Home Index</a>
+        </nav>
+        <h1 style="font-size: 1.6rem; margin: 0; color: #05192d;">Admin Lesson Upload Studio</h1>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" id="load-preset-btn" class="btn-secondary-action" style="min-height: 40px; font-size: 0.88rem;">
+          Load "H1 Tag on HTML" Preset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container-xl" style="max-width: 76rem; padding-bottom: 3rem;">
+    <div id="status-message" class="status-alert" role="status" aria-live="polite"></div>
+
+    <div class="row g-4">
+      <!-- Left Column: Upload & Configure Form -->
+      <div class="col-lg-6">
+        <form id="upload-form" class="card-box" enctype="multipart/form-data">
+          <h2 style="font-size: 1.25rem; color: #05192d; margin-top: 0; margin-bottom: 0.5rem;">
+            1. Tutorial &amp; Dual-Video Setup
+          </h2>
+          <p class="form-hint" style="margin-bottom: 1.25rem;">
+            Upload 2 synchronized videos: the <strong>Main Course Tutorial</strong> video and the <strong>Ethiopian Sign Language (EthSL)</strong> video. Both will play in lockstep synchronization.
+          </p>
+
+          <!-- Lesson Title -->
+          <div class="mb-3">
+            <label class="form-label" for="form-title">Tutorial Title *</label>
+            <input type="text" id="form-title" name="title" class="form-control" required value="What is the H1 tag on HTML" placeholder="e.g. What is the H1 tag on HTML">
+          </div>
+
+          <!-- Lesson ID -->
+          <div class="mb-3">
+            <label class="form-label" for="form-id">Lesson Slug ID *</label>
+            <input type="text" id="form-id" name="lesson_id" class="form-control" required value="html-h1-tag" placeholder="e.g. html-h1-tag">
+            <span class="form-hint">Used in URLs: <code>concept-with-navigation.html?lesson=html-h1-tag</code></span>
+          </div>
+
+          <hr style="margin: 1.5rem 0; border-color: #e2e8f0;">
+
+          <!-- Video 1: Main Course Video -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <label class="form-label mb-0" for="main-video-file">Video 1: Main Course Video (Tutorial / Lecture) *</label>
+              <span class="badge-sync">Main Track</span>
+            </div>
+            <p class="form-hint">The primary lecture / coding screencast (e.g. explaining HTML heading structure).</p>
+            <div class="video-dropzone">
+              <label for="main-video-file" class="form-label" style="font-size: 0.88rem;">Upload File (.mp4, .webm):</label>
+              <input type="file" id="main-video-file" name="video_file" class="form-control mb-2" accept="video/mp4,video/webm">
+              <label for="main-video-url" class="form-label" style="font-size: 0.88rem;">Or Enter Existing Media URL:</label>
+              <input type="text" id="main-video-url" name="video_url" class="form-control" value="/savanna/assets/media/va-future-lesson.mp4">
+            </div>
+          </div>
+
+          <!-- Video 2: EthSL Sign Video -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <label class="form-label mb-0" for="sign-video-file">Video 2: Ethiopian Sign Language (EthSL) Video *</label>
+              <span class="badge-sync" style="background:#e0f2fe; color:#0369a1; border-color:#0284c7;">Synced Video</span>
+            </div>
+            <p class="form-hint">Prerecorded human interpreter video synchronized with the main tutorial.</p>
+            <div class="video-dropzone" style="background: #f0fdf4; border-color: #86efac;">
+              <label for="sign-video-file" class="form-label" style="font-size: 0.88rem;">Upload File (.mp4, .webm):</label>
+              <input type="file" id="sign-video-file" name="sign_file" class="form-control mb-2" accept="video/mp4,video/webm">
+              <label for="sign-video-url" class="form-label" style="font-size: 0.88rem;">Or Enter Existing Media URL:</label>
+              <input type="text" id="sign-video-url" name="sign_url" class="form-control" value="/savanna/assets/media/va-future-ethsl.mp4">
+            </div>
+          </div>
+
+          <!-- Captions & Audio -->
+          <div class="mb-4">
+            <label class="form-label">Captions &amp; Audio Descriptions (WebVTT)</label>
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <input type="text" id="captions-en" name="captions_en_url" class="form-control" value="/savanna/assets/captions/va-future-en.vtt" placeholder="English VTT URL">
+              </div>
+              <div class="col-sm-6">
+                <input type="text" id="captions-am" name="captions_am_url" class="form-control" value="/savanna/assets/captions/va-future-am.vtt" placeholder="Amharic VTT URL">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <button type="submit" id="submit-btn" class="btn-publish">
+              <span>🚀 Publish Lesson &amp; Launch Dual-Sync Player</span>
+            </button>
+            <button type="button" id="preview-local-btn" class="btn-secondary-action">
+              <span>Preview Videos in Sync</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Published Lessons Directory Card -->
+        <div class="card-box">
+          <h3 style="font-size: 1.1rem; color: #05192d; margin-top: 0;">Published Tutorials in System</h3>
+          <ul id="lessons-list" style="padding-left: 1.25rem; margin-bottom: 0; font-size: 0.92rem;">
+            <li>Loading published tutorials...</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Dual-Sync Preview Player -->
+      <div class="col-lg-6">
+        <div class="card-box" style="position: sticky; top: 1rem;">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <div>
+              <h2 id="preview-heading" style="font-size: 1.25rem; color: #05192d; margin: 0;">
+                What is the H1 tag on HTML
+              </h2>
+              <span class="badge-sync" style="margin-top: 0.25rem; display: inline-block;">Dual-Video Synchronized Mode</span>
+            </div>
+            <div>
+              <a id="open-concept-link" href="/savanna/pages/concept-with-navigation.html?lesson=html-h1-tag" target="_blank" class="btn-secondary-action" style="min-height: 38px; padding: 0.35rem 0.75rem; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center;">
+                Open Full Learner View &rarr;
+              </a>
+            </div>
+          </div>
+          <p class="form-hint mb-2">
+            Both the <strong>Course Tutorial</strong> and the <strong>EthSL Video</strong> play simultaneously in lockstep sync. Try seeking, pausing, or toggling <strong>Side-by-Side (◫)</strong> or <strong>Movable PiP</strong>.
+          </p>
+
+          <div class="preview-box">
+            <db-player
+              id="admin-player"
+              title="What is the H1 tag on HTML"
+              src="/savanna/assets/media/va-future-lesson.mp4"
+              sign="/savanna/assets/media/va-future-ethsl.mp4"
+              captions="/savanna/assets/captions/va-future-en.vtt,/savanna/assets/captions/va-future-am.vtt"
+              describe="/savanna/assets/captions/va-future-ad-en.vtt"
+              lesson-id="html-h1-tag"
+              api="/api/v1"
+              lang="en">
+            </db-player>
+          </div>
+
+          <div style="margin-top: 1rem; padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.88rem;">
+            <strong>Sync Features Verified:</strong>
+            <ul style="margin: 0.35rem 0 0 1.25rem; padding: 0;">
+              <li><strong>Simultaneous Play/Pause:</strong> Press Play once to start both videos in sync.</li>
+              <li><strong>Lockstep Seeking:</strong> Scrubbing the timeline keeps both videos aligned to the exact frame.</li>
+              <li><strong>Side-by-Side View (◫):</strong> Click the <code>◫</code> button in the sign toolbar to split the stage 50/50 so tutorial code and sign interpreter are both 100% visible.</li>
+              <li><strong>Movable Floating Window:</strong> Switch to PiP and drag the EthSL window anywhere across the page.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const statusMsg = document.getElementById("status-message");
+    const adminPlayer = document.getElementById("admin-player");
+    const previewHeading = document.getElementById("preview-heading");
+    const openConceptLink = document.getElementById("open-concept-link");
+    const lessonsList = document.getElementById("lessons-list");
+    const presetBtn = document.getElementById("load-preset-btn");
+    const previewLocalBtn = document.getElementById("preview-local-btn");
+
+    function showStatus(text, isError = false) {
+      statusMsg.textContent = text;
+      statusMsg.className = "status-alert " + (isError ? "error" : "success");
+      statusMsg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function updatePreviewPlayer(title, lessonId, mainVideo, signVideo, capsEn, capsAm) {
+      previewHeading.textContent = title;
+      openConceptLink.href = `/savanna/pages/concept-with-navigation.html?lesson=${encodeURIComponent(lessonId)}`;
+      adminPlayer.setAttribute("title", title);
+      adminPlayer.setAttribute("lesson-id", lessonId);
+      adminPlayer.setAttribute("src", mainVideo);
+      adminPlayer.setAttribute("sign", signVideo);
+      const caps = [capsEn, capsAm].filter(Boolean);
+      if (caps.length) adminPlayer.setAttribute("captions", caps.join(","));
+    }
+
+    async function loadPublishedLessons() {
+      try {
+        const res = await fetch("/api/v1/lessons");
+        if (!res.ok) throw new Error("Failed to load lessons");
+        const list = await res.json();
+        if (!list || !list.length) {
+          lessonsList.innerHTML = "<li>No lessons published yet.</li>";
+          return;
+        }
+        lessonsList.innerHTML = list.map(l => `
+          <li style="margin-bottom: 0.4rem;">
+            <strong>${escapeHtml(l.title)}</strong> (<code>${escapeHtml(l.id)}</code>) &mdash;
+            <a href="#" data-load-id="${escapeHtml(l.id)}" style="font-weight:700; color:#0d5c3a;">Load into Studio</a> |
+            <a href="${l.viewer_url || `/savanna/pages/concept-with-navigation.html?lesson=${encodeURIComponent(l.id)}`}" target="_blank" style="font-weight:700; color:#05192d;">View Live &rarr;</a>
+          </li>
+        `).join("");
+
+        lessonsList.querySelectorAll("[data-load-id]").forEach(a => {
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            const id = a.dataset.loadId;
+            const item = list.find(x => x.id === id);
+            if (item) {
+              document.getElementById("form-title").value = item.title;
+              document.getElementById("form-id").value = item.id;
+              document.getElementById("main-video-url").value = item.video || "";
+              document.getElementById("sign-video-url").value = item.sign || "";
+              document.getElementById("captions-en").value = (item.captions && item.captions.en) || "";
+              document.getElementById("captions-am").value = (item.captions && item.captions.am) || "";
+              updatePreviewPlayer(item.title, item.id, item.video, item.sign, (item.captions && item.captions.en), (item.captions && item.captions.am));
+              showStatus(`Loaded "${item.title}" into studio player.`);
+            }
+          });
+        });
+      } catch (err) {
+        lessonsList.innerHTML = `<li>Error loading list: ${err.message}</li>`;
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return str.replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]);
+    }
+
+    presetBtn.addEventListener("click", () => {
+      document.getElementById("form-title").value = "What is the H1 tag on HTML";
+      document.getElementById("form-id").value = "html-h1-tag";
+      document.getElementById("main-video-url").value = "/savanna/assets/media/va-future-lesson.mp4";
+      document.getElementById("sign-video-url").value = "/savanna/assets/media/va-future-ethsl.mp4";
+      document.getElementById("captions-en").value = "/savanna/assets/captions/va-future-en.vtt";
+      document.getElementById("captions-am").value = "/savanna/assets/captions/va-future-am.vtt";
+      updatePreviewPlayer(
+        "What is the H1 tag on HTML",
+        "html-h1-tag",
+        "/savanna/assets/media/va-future-lesson.mp4",
+        "/savanna/assets/media/va-future-ethsl.mp4",
+        "/savanna/assets/captions/va-future-en.vtt",
+        "/savanna/assets/captions/va-future-am.vtt"
+      );
+      showStatus('Loaded preset for "What is the H1 tag on HTML". Ready to publish!');
+    });
+
+    previewLocalBtn.addEventListener("click", () => {
+      const title = document.getElementById("form-title").value.trim() || "Untitled Tutorial";
+      const id = document.getElementById("form-id").value.trim() || "custom-tutorial";
+      const mainFile = document.getElementById("main-video-file").files[0];
+      const signFile = document.getElementById("sign-video-file").files[0];
+
+      const mainSrc = mainFile ? URL.createObjectURL(mainFile) : document.getElementById("main-video-url").value.trim();
+      const signSrc = signFile ? URL.createObjectURL(signFile) : document.getElementById("sign-video-url").value.trim();
+      const capEn = document.getElementById("captions-en").value.trim();
+      const capAm = document.getElementById("captions-am").value.trim();
+
+      updatePreviewPlayer(title, id, mainSrc, signSrc, capEn, capAm);
+      showStatus(`Live preview configured with dual-synchronized video tracks.`);
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById("submit-btn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Publishing dual videos...";
+
+      try {
+        const formData = new FormData(form);
+        const res = await fetch("/api/v1/lessons", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || "Server error while saving tutorial");
+        }
+
+        const data = await res.json();
+        showStatus(`🎉 Tutorial "${data.title}" published successfully! Both videos are synchronized.`);
+        updatePreviewPlayer(data.title, data.id, data.video, data.sign, data.captions?.en, data.captions?.am);
+        await loadPublishedLessons();
+      } catch (err) {
+        showStatus(`Publish failed: ${err.message}`, true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<span>🚀 Publish Lesson &amp; Launch Dual-Sync Player</span>";
+      }
+    });
+
+    // Initial load
+    loadPublishedLessons();
+  </script>
+</body>
+</html>

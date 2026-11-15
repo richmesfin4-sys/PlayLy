@@ -1,0 +1,73 @@
+WEBVTT - ALX Savanna Training Session 3: WCAG 2.2 AA & Screen Reader Testing (Nov 12, 2026)
+
+1
+00:00:00.000 --> 00:00:15.000
+<v Heaven Youn>Welcome everyone to the session! Today Hussein Ali joins us for WCAG 2.2 and Screen Reader testing.
+
+2
+00:00:15.000 --> 00:01:00.000
+<v Hussein Ali>Good evening ladies and gentlemen. Today we will dive deep into WCAG 2.2 Level AA and screen reader testing with NVDA and TalkBack.
+
+3
+00:01:00.000 --> 00:02:10.000
+<v Hussein Ali>By the end of this session, you will know the WCAG 2.2 AA target, map success criteria, and test with NVDA and TalkBack.
+
+4
+00:02:10.000 --> 00:03:40.000
+<v Hussein Ali>WebAIM scans 1 million home pages every year: in 2026, 95.9% had detectable failures, averaging 56 errors per page. We must fix these top 6 errors.
+
+5
+00:03:40.000 --> 00:05:10.000
+<v Hussein Ali>Why do this? UN CRPD Article 9: Access to information and ICT on an equal basis. Ratified by Ethiopia in 2010.
+
+6
+00:05:10.000 --> 00:07:00.000
+<v Hussein Ali>What standard? WCAG 2.2 AA approved by ISO. Level AA is your quality bar for the hackathon and what most laws require.
+
+7
+00:07:00.000 --> 00:08:40.000
+<v Hussein Ali>The 4 Core Principles: Perceivable, Operable, Understandable, Robust. Perceivable means learners can see or hear content with text alternatives and contrast.
+
+8
+00:08:40.000 --> 00:10:20.000
+<v Hussein Ali>Operable means people can use it via keyboard, sufficient time, and large targets. Understandable means clear, predictable, and error-tolerant.
+
+9
+00:10:20.000 --> 00:12:30.000
+<v Hussein Ali>Robust means it works with assistive tech like screen readers, exposing correct name, role, and state in the accessibility tree.
+
+10
+00:12:30.000 --> 00:15:00.000
+<v Hussein Ali>New in WCAG 2.2: Focus Not Obscured (2.4.11), Dragging Movements (2.5.7), Target Size minimum 24x24px (2.5.8), Consistent Help (3.2.6), Redundant Entry (3.3.7), and Accessible Auth (3.3.8).
+
+11
+00:15:00.000 --> 00:20:00.000
+<v Hussein Ali>Screen readers do not read pixels—they read the accessibility tree. Use native HTML elements with computed names and roles.
+
+12
+00:20:00.000 --> 00:25:00.000
+<v Hussein Ali>NVDA essential Windows testing: H for headings, D for landmarks, F for form fields, and NVDA+F7 for link lists.
+
+13
+00:25:00.000 --> 00:30:00.000
+<v Hussein Ali>TalkBack essential Android testing: Swipe right/left, double tap to activate, two-finger scroll, and testing inside mobile webviews.
+
+14
+00:30:00.000 --> 00:35:00.000
+<v Hussein Ali>Common bugs and one-line fixes: Icon button with no name, Div used as button, errors not announced, no language attribute, and focus trapped in popups.
+
+15
+00:35:00.000 --> 00:40:00.000
+<v Hussein Ali>Self-check before judging day: 0 serious axe issues, keyboard only, focus always visible, NVDA pass, captions/transcript, and 400% zoom reflow.
+
+16
+00:40:00.000 --> 00:45:00.000
+<v Kirubel / Hussein>Q&A: Testing across browsers (Brave, Edge, Firefox) and supporting multiple assistive tech.
+
+17
+00:45:00.000 --> 00:51:40.000
+<v 392743 / Heaven>Q&A: Track 1 scope — Heaven clarifies that solutions must be multi-functional across disabilities (blind, deaf, physical, cognitive, alternative ID).
+
+18
+00:51:40.000 --> 00:51:43.000
+<v Heaven Youn>Concluding remarks: On-site submissions Sunday, presentation next Saturday Nov 21. Thank you everyone!

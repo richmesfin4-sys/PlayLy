@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Digital Bridge Plugin Hub & Accessibility API
+  version: 1.0.0
+  description: REST API for Marketplace plugins, Track 2 accessible learning media, cross-device dual-disability sign-in, and Career Gateway job/badge verification.
+servers:
+  - url: /api/v1
+paths:
+  /extensions:
+    get:
+      summary: Browse and search VS Code & Web accessibility plugins
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: category
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of plugins
+  /extensions/{id}/rate:
+    post:
+      summary: Submit a star rating and review for an extension
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Rating recorded
+        '400':
+          description: Invalid rating input
+  /extensions/{id}/download:
+    post:
+      summary: Record extension download and return install manifest
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Download bundle metadata
+  /learners:
+    post:
+      summary: Create learner profile (support preferences stored apart)
+      responses:
+        '201':
+          description: Learner created
+  /learners/{id}/support:
+    put:
+      summary: Update sensitive learner support needs separately from profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Support choices saved
+  /learners/{id}/export:
+    get:
+      summary: Export all data held about the learner
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complete learner export
+  /learners/{id}:
+    delete:
+      summary: Delete all learner profile and support data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Learner deleted
+  /lessons/{id}:
+    get:
+      summary: Get lesson metadata and caption tracks
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lesson metadata
+  /lessons/{id}/transcript:
+    get:
+      summary: Fetch WebVTT transcript in requested language
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: lang
+          schema:
+            type: string
+      responses:
+        '200':
+          description: WebVTT text
+  /lessons/{id}/captions:
+    post:
+      summary: Upload or update corrected WebVTT captions
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Captions updated
+  /jobs:
+    get:
+      summary: List inclusive job postings with schema.org/JobPosting JSON-LD
+      responses:
+        '200':
+          description: Job listings
+  /certificates/verify:
+    post:
+      summary: Verify an Open Badges 3.0 credential signature
+      responses:
+        '200':
+          description: Verification result

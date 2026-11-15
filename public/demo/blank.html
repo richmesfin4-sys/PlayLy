@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Bridge — Blank Host Compatibility Proof</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Noto Sans Ethiopic", sans-serif;
+        max-width: 920px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+      header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #cbd5e1;
+      }
+      section {
+        margin-bottom: 2.5rem;
+      }
+      pre {
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+    </style>
+    <script src="/module/db-player.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Standalone Host Compatibility Proof (No Bootstrap / No Tailwind)</h1>
+      <p>
+        This empty HTML page loads <code>/module/db-player.js</code> via a single
+        <code>&lt;script&gt;</code> tag with real lesson &amp; EthSL sign-language videos.
+      </p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Track 2 Plug-in: &lt;db-player&gt;</h2>
+        <db-player
+          src="/assets/media/demo-lesson.mp4"
+          captions="/assets/media/demo-lesson.vtt,/assets/media/demo-lesson.am.vtt"
+          sign="/assets/media/demo-lesson.ethsl.mp4"
+          describe="/assets/media/demo-lesson.ad.vtt"
+          lesson-id="demo-accessibility"
+          lang="en"
+          api="/api/v1"
+        ></db-player>
+      </section>
+
+      <section>
+        <h2>Host Event Log</h2>
+        <pre id="event-log" aria-live="polite">Waiting for plug-in CustomEvents...</pre>
+      </section>
+    </main>
+
+    <script>
+      const log = document.getElementById('event-log');
+      ['db-player:progress', 'db-player:complete', 'db-player:prefs'].forEach(
+        (evtName) => {
+          document.addEventListener(evtName, (e) => {
+            log.textContent = `${evtName} -> ${JSON.stringify(e.detail)}`;
+          });
+        }
+      );
+    </script>
+  </body>
+</html>

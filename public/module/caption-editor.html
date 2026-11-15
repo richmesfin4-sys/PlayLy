@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Savanna Caption Pipeline Editor | Track 2</title>
+  <style>
+    :host, body {
+      font-family: system-ui, -apple-system, "Noto Sans Ethiopic", sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+    h1 {
+      margin-top: 0;
+      color: #002b56;
+      font-size: 1.75rem;
+    }
+    .badge-pipeline {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+      background: #ffffff;
+    }
+    .btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 2px solid #002b56;
+      background: #ffffff;
+      color: #002b56;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-primary {
+      background: #002b56;
+      color: #ffffff;
+    }
+    .btn:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 3px solid #f5a300;
+      outline-offset: 2px;
+    }
+    .cue-row {
+      display: grid;
+      grid-template-columns: 120px 120px 1fr 80px;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    input, textarea, select {
+      font: inherit;
+      padding: 0.5rem;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      min-height: 44px;
+    }
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+    .alert-info {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+    }
+    .alert-success {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <h1>Caption Correction Pipeline <span class="badge-pipeline">Section 5 Step 2</span></h1>
+      <a href="/" class="btn">Back to Digital Bridge</a>
+    </div>
+
+    <div class="alert alert-info" role="region" aria-label="Pipeline workflow explanation">
+      <strong>Pipeline Workflow:</strong> 
+      1. Open speech model generates rough drafts &rarr; 
+      2. Human reviewer corrects phonetics &amp; timing &rarr; 
+      3. Export directly to valid WebVTT or upload via <code>POST /api/v1/lessons/{id}/captions</code>.
+    </div>
+
+    <div class="card">
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <label for="lesson-select">Lesson ID:</label>
+          <select id="lesson-select">
+            <option value="demo-accessibility">demo-accessibility (Designing for everyone)</option>
+            <option value="va-future-01">va-future-01 (Designing for everyone · Alias)</option>
+          </select>
+        </div>
+        <div>
+          <label for="lang-select">Language:</label>
+          <select id="lang-select">
+            <option value="am">አማርኛ (Amharic)</option>
+            <option value="en">English</option>
+            <option value="ti">ትግርኛ (Tigray)</option>
+            <option value="om">Afaan Oromoo (Oromo)</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="so">Af-Soomaali (Somali)</option>
+          </select>
+        </div>
+        <div>
+          <button type="button" class="btn" id="btn-load">Load Existing Draft</button>
+          <button type="button" class="btn" id="btn-mock-speech">Simulate Speech-to-Text Draft</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-msg" role="status" aria-live="polite"></div>
+
+    <section aria-labelledby="editor-heading" class="card">
+      <h2 id="editor-heading" style="font-size:1.25rem; margin-top:0;">Cue Editor</h2>
+      <div style="display:grid; grid-template-columns: 120px 120px 1fr 80px; gap:0.75rem; font-weight:700; margin-bottom:0.5rem;">
+        <div>Start (sec)</div>
+        <div>End (sec)</div>
+        <div>Caption Text</div>
+        <div>Action</div>
+      </div>
+      <div id="cues-list"></div>
+
+      <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <button type="button" class="btn" id="btn-add-cue">+ Add Cue</button>
+        <button type="button" class="btn btn-primary" id="btn-save-server">Save to Server (POST API)</button>
+        <button type="button" class="btn" id="btn-export-vtt">Export WebVTT File</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let cues = [
+      { start: 0, end: 3.68, text: "ስለ ዲጂታል ተደራሽነት ወደዚህ አጭር ትምህርት እንኳን በደህና መጡ።" },
+      { start: 4.18, end: 8.94, text: "በዓለም ላይ ካሉ ስድስት ሰዎች አንዱ የአካል ጉዳት አለበት፤ የሚታይም ይሁን የማይታይ።" },
+      { start: 9.44, end: 13.38, text: "ጥሩ ንድፍ እንቅፋቶችን ያስወግዳል እንጂ ሰዎችን አያስወግድም።" },
+      { start: 13.88, end: 18.47, text: "የጽሑፍ ግልባጮች መስማት የተሳናቸው ተማሪዎች እያንዳንዱን ቃል እንዲከታተሉ ያስችላሉ።" },
+      { start: 18.97, end: 23.71, text: "የስክሪን አንባቢዎች ለዓይነ ስውር ተማሪዎች ገጹን ጮክ ብለው ይገልጻሉ።" },
+      { start: 24.21, end: 29.10, text: "የቁልፍ ሰሌዳ ድጋፍ ማለት ማንም ሰው አይጥ ሳይነካ ማሰስ ይችላል ማለት ነው።" },
+      { start: 29.60, end: 34.86, text: "ቀላል ቋንቋ እና ግልጽ ደረጃዎች የመረዳት ችግር ያለባቸውን ተማሪዎች ይደግፋሉ።" },
+      { start: 35.36, end: 39.45, text: "አሁን ለሁሉም በትክክል የሚሰራ ነገር እንገንባ። [ሙዚቃ]" }
+    ];
+
+    const listEl = document.getElementById('cues-list');
+    const statusEl = document.getElementById('status-msg');
+
+    function renderCues() {
+      listEl.innerHTML = '';
+      cues.forEach((cue, idx) => {
+        const row = document.createElement('div');
+        row.className = 'cue-row';
+        const safeText = String(cue.text || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+        row.innerHTML = `
+          <input type="number" step="0.01" value="${cue.start}" aria-label="Start time for cue ${idx+1}" data-field="start" data-idx="${idx}">
+          <input type="number" step="0.01" value="${cue.end}" aria-label="End time for cue ${idx+1}" data-field="end" data-idx="${idx}">
+          <input type="text" value="${safeText}" aria-label="Caption text for cue ${idx+1}" data-field="text" data-idx="${idx}" style="width:100%;">
+          <button type="button" class="btn" data-action="del" data-idx="${idx}" style="color:#b91c1c; border-color:#b91c1c;" aria-label="Delete cue ${idx+1}">Delete</button>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+
+    listEl.addEventListener('input', (e) => {
+      const idx = e.target.dataset.idx;
+      const field = e.target.dataset.field;
+      if (idx !== undefined && field) {
+        cues[idx][field] = field === 'text' ? e.target.value : parseFloat(e.target.value);
+      }
+    });
+
+    listEl.addEventListener('click', (e) => {
+      if (e.target.dataset.action === 'del') {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        cues.splice(idx, 1);
+        renderCues();
+      }
+    });
+
+    document.getElementById('btn-add-cue').addEventListener('click', () => {
+      const last = cues[cues.length - 1];
+      const nextStart = last ? last.end + 0.5 : 0;
+      cues.push({ start: nextStart, end: nextStart + 4, text: "" });
+      renderCues();
+    });
+
+    document.getElementById('btn-load').addEventListener('click', async () => {
+      const lessonId = document.getElementById('lesson-select').value;
+      const lang = document.getElementById('lang-select').value;
+      try {
+        const res = await fetch(`/api/v1/lessons/${lessonId}/transcript?lang=${lang}&format=json`);
+        if (!res.ok) throw new Error('Failed to fetch transcript');
+        const data = await res.json();
+        if (data.cues && data.cues.length) {
+          cues = data.cues.map(c => ({
+            start: typeof c.start === 'number' ? c.start : parseFloat(c.start),
+            end: typeof c.end === 'number' ? c.end : parseFloat(c.end),
+            text: c.text
+          }));
+          renderCues();
+          statusEl.className = 'alert alert-success';
+          statusEl.textContent = `Loaded ${cues.length} cues for ${lessonId} (${lang}) from server.`;
+        }
+      } catch (err) {
+        statusEl.className = 'alert alert-info';
+        statusEl.textContent = 'Error loading transcript: ' + err.message;
+      }
+    });
+
+    document.getElementById('btn-mock-speech').addEventListener('click', () => {
+      const lang = document.getElementById('lang-select').value;
+      if (lang === 'am') {
+        cues = [
+          { start: 0, end: 3.5, text: "ስለ ዲጂታል ተደራሽነት ወደዚህ አጭር ትምህርት እንኳን በደህና መጡ [ሙዚቃ]" },
+          { start: 4.0, end: 8.8, text: "በዓለም ላይ ካሉ ስድስት ሰዎች አንዱ የአካል ጉዳት አለበት።" },
+          { start: 9.2, end: 13.0, text: "ጥሩ ንድፍ እንቅፋቶችን ያስወግዳል።" }
+        ];
+      } else {
+        cues = [
+          { start: 0, end: 3.5, text: "Welcome to this short lesson on digital accessibility [music]." },
+          { start: 4.0, end: 8.8, text: "One in six people in the world live with a disability." },
+          { start: 9.2, end: 13.0, text: "Good design removes barriers." }
+        ];
+      }
+      renderCues();
+      statusEl.className = 'alert alert-info';
+      statusEl.textContent = 'Simulated automated speech-to-text draft generated. Review and correct.';
+    });
+
+    function generateVTT() {
+      const toVttTime = (sec) => {
+        sec = Math.max(0, sec);
+        const h = Math.floor(sec / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        const s = (sec % 60).toFixed(3);
+        const pad = (n) => String(n).padStart(2, '0');
+        const sPad = String(s).padStart(6, '0');
+        return `${pad(h)}:${pad(m)}:${sPad}`;
+      };
+
+      let vtt = "WEBVTT\n\n";
+      cues.forEach((c, i) => {
+        vtt += `${i + 1}\n${toVttTime(c.start)} --> ${toVttTime(c.end)}\n${c.text}\n\n`;
+      });
+      return vtt;
+    }
+
+    document.getElementById('btn-export-vtt').addEventListener('click', () => {
+      const vtt = generateVTT();
+      const lang = document.getElementById('lang-select').value;
+      const blob = new Blob([vtt], { type: 'text/vtt;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `lesson.${lang}.vtt`;
+      a.click();
+    });
+
+    document.getElementById('btn-save-server').addEventListener('click', async () => {
+      const vtt = generateVTT();
+      const lang = document.getElementById('lang-select').value;
+      const lessonId = document.getElementById('lesson-select').value;
+      try {
+        const res = await fetch(`/api/v1/lessons/${lessonId}/captions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lang, vtt })
+        });
+        if (res.ok) {
+          statusEl.className = 'alert alert-success';
+          statusEl.textContent = `Captions successfully saved to server for lesson "${lessonId}" (${lang}).`;
+        } else {
+          throw new Error('Save failed');
+        }
+      } catch (e) {
+        statusEl.className = 'alert alert-info';
+        statusEl.textContent = 'Server response: Captions generated and ready. (' + e.message + ')';
+      }
+    });
+
+    renderCues();
+  </script>
+</body>
+</html>

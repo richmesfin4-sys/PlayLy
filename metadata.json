@@ -1,0 +1,6 @@
+{
+  "name": "Digital Bridge Plugin Hub",
+  "description": "VS Code & Web Accessibility Plugin Marketplace with ALX Digital Bridge Track 2 Learning Media, Cross-Device Dual-Disability Sign-In, and Career Gateway.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
